@@ -66,7 +66,7 @@ class App extends Component {
   }
 
   login(event){
-    let name = event.target.value;
+    let name = event.target.value.trim();
     let key = event.key;
 
     if (event.key === 'Enter'){
