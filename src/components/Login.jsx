@@ -10,12 +10,12 @@ class Login extends Component {
 	}
 
 	componentDidMount(){
-		this.loginInput.current.focus();
+		this.loginInput.current && this.loginInput.current.focus();
 	}
 
 	render(){
 			if (this.props.isLoggedIn) {
-				return <Redirect to='/boards' />
+				return <Redirect to='/boardlists' />
 			} else {
 			return (
 				<>	

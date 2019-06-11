@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router-dom'
-import BoardList from './BoardList'
+import { Redirect } from 'react-router-dom';
+import BoardList from './BoardList';
 // import ToolBar from './Toolbar'
 
 
@@ -27,7 +27,9 @@ class Wrapper extends Component{
 						logout={this.props.logout}
 						/>
 					<BoardList 
+						user={this.props.user}
 						boards={this.props.boards}
+						addBoard={this.props.addBoard}
 						/>
 				</>
   			)

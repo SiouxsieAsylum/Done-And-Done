@@ -60,20 +60,29 @@ class App extends Component {
 
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.setStateToLocalStorageValues = this.setStateToLocalStorageValues.bind(this);
+    this.initStateWithLocalStorageValues = this.initStateWithLocalStorageValues.bind(this);
+
+    this.addBoard = this.addBoard.bind(this);
   }
 
   ///////////////////////// 'AUTH' FUNCTIONS ///////////////////////////
 
   componentWillMount(){
-    this.setStateToLocalStorageValues();
+    this.initStateWithLocalStorageValues();
   }
 
-  setStateToLocalStorageValues(){
+  componentWillUnmount(){
+    
+  }
+
+  initStateWithLocalStorageValues(){
     this.setState((prevState) =>{
-      let holderState = prevState
+      let holderState = {};
       holderState.user = localStorage.getItem('user') || '';
-      holderState.isLoggedIn = (localStorage.getItem('isLoggedIn').trim() === 'true') || false;
+      holderState.isLoggedIn = (localStorage.getItem('isLoggedIn') === 'true') || false;
+
+      let allBoards = localStorage.getItem('allBoards');
+      holderState.allBoards = allBoards ? JSON.parse(allBoards) : {}
       return holderState;
     })
   }
@@ -84,21 +93,23 @@ class App extends Component {
 
     if (event.key === 'Enter'){
       this.setState((prevState) =>{
-        let holderState = prevState;
+        let holderState = {};
         holderState.user = name;
         holderState.isLoggedIn = true;
-        holderState.allBoards[name] = {};
+        
+
         return holderState;
       })
-
+      console.log(this.state.allBoards)
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('user', name);
+      //localStorage.setItem('allBoards', JSON.stringify(this.state.allBoards))
     } 
   }
 
   logout(){
     this.setState((prevState) =>{
-        let holderState = prevState;
+        let holderState = {};
         holderState.user = '';
         holderState.isLoggedIn = false;
 
@@ -107,44 +118,48 @@ class App extends Component {
 
     localStorage.setItem('isLoggedIn', false);
     localStorage.setItem('user', '');
+    localStorage.setItem('allBoards', JSON.stringify(this.state.allBoards))
+
   }
-
-
-  ////////////////////////// BOARDLIST CRUD ///////////////////////
-
-  addBoardList(event){
-    
-  }
-
-  deleteBoardList(event){
-    
-  }
-
-
 
   //////////////////////////// BOARD CRUD /////////////////////////
 
-  addBoard(event){
-
+  addBoard(obj){
+    obj.dateCreated = new Date().toString()
+    this.setState((prevState) =>{
+        let holderState = prevState;
+        holderState.allBoards = prevState.allBoards[this.state.user].push(obj)
+        return holderState;
+    })
   }
 
   deleteBoard(event){
+    this.setState({
 
+    })
   }
+
+  ////////////////////////// TASK LIST CRUD ///////////////////////
 
 
   //////////////////////////// TASK CRUD //////////////////////////
 
   addTask(event){
+    this.setState({
 
+    })
   }
 
   deleteTask(event){
+    this.setState({
 
+    })
   }
 
   toggleCompletion(event){
+    this.setState({
 
+    })
   }
 
 
@@ -161,11 +176,12 @@ class App extends Component {
                     login={this.login}
                     />           
             )}/>            
-            <Route path={'/boards'} render={() => (
+            <Route path={'/boardlists'} render={() => (
               <Wrapper
                user={this.state.user}
                logout={this.logout}
                isLoggedIn={this.state.isLoggedIn}
+               addBoard={this.addBoard}
                boards={this.state.allBoards[this.state.user]}
                />
             )}
