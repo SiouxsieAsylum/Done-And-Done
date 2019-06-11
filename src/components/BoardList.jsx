@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, withRouter, Route, Link } from 'react-router-dom';
 import Board from './Board'
 import Add from './Add'
 
@@ -8,7 +8,7 @@ const BoardNav = (props) => {
 			<ul>
 				{props.boards && props.boards.map(board => {
 					return <li key={board.title + '-nav'}>
-						<Link to={board.title}>
+						<Link to={props.pathname + '/' + board.title}>
 							{board.title}
 						</Link>
 					</li>
@@ -46,36 +46,39 @@ class BoardList extends Component{
 
 
 	render(){
+		 let pathname = '/boardlists'
+		// let fullPathName  = pathname + '/:title';
+		// console.log(pathname)
 		return (
 				<>
-					<BoardNav 
-						boards={this.props.boards}
-					/>
-					{this.props.boards && this.props.boards.map((board) =>{
-						return <Route
-							key={board.title}
-							path="/:title" 
-							render={() => (
-								<Board
-									title={board.title}
-									dateCreated={board.dateCreated}
-									tasklist={board.tasklist}
-									/>
-						)}/>
+						<BoardNav 
+							pathname={pathname}
+							boards={this.props.boards}
+						/>
+						{this.props.boards.map((board) =>
+						{	
+							return <Route
+								exact
+								key={board.title}
+								path={pathname + '/' + board.title} 
+								render={() => (
+									<Board
+										title={board.title}
+										dateCreated={board.dateCreated}
+										tasklist={board.tasklist}
+										/>
+							)}/>
+						})}
+						<button onClick={this.setAddTrue}>Add Board</button>
+						{this.state.add && <Add 
+											tag="board"
+											submissionFunction={this.handleBoardAddition}
+												/>
+											}
 
-					})}
-					<button onClick={this.setAddTrue}>Add Board</button>
-					{this.state.add && <Add 
-										tag="board"
-										submissionFunction={this.handleBoardAddition}
-											/>
-										}
-
-					
-					
 				</>
 			)
 	}
 }
 
-export default BoardList;
+export default withRouter(BoardList);
