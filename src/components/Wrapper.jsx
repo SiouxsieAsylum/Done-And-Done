@@ -1,6 +1,17 @@
 import React, {Component} from 'react';
 import { Redirect } from 'react-router-dom'
+import BoardList from './BoardList'
+// import ToolBar from './Toolbar'
 
+
+function Toolbar(props){
+	return (
+		<h1>
+			Toolbar 					
+			<button onClick={props.logout}>Logout</button>
+		</h1>
+	)
+}
 
 class Wrapper extends Component{
 	constructor(props){
@@ -10,12 +21,16 @@ class Wrapper extends Component{
 		if (!this.props.isLoggedIn) {
 			return <Redirect to="/" />
 		} else {
-	  		return (
-					<>
-						<h1>Wrapper</h1>
-						<button onClick={this.props.logout}>Logout</button>
-					</>
-	  			)
+  		return (
+				<>
+					<Toolbar 
+						logout={this.props.logout}
+						/>
+					<BoardList 
+						boards={this.props.boards}
+						/>
+				</>
+  			)
   		}
 	}
 }

@@ -15,7 +15,7 @@ class Login extends Component {
 
 	render(){
 			if (this.props.isLoggedIn) {
-				return <Redirect to="/:user/boards" />
+				return <Redirect to='/boards' />
 			} else {
 			return (
 				<>	
@@ -25,8 +25,6 @@ class Login extends Component {
 						onKeyUp={this.props.login}
 						ref={this.loginInput}
 						/>
-					<button onClick={this.props.logout}>Logout</button>
-					<h1>{this.props.user}</h1>
 				</>
 			)			
 		}

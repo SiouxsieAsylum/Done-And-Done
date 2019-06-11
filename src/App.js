@@ -63,6 +63,8 @@ class App extends Component {
     this.setStateToLocalStorageValues = this.setStateToLocalStorageValues.bind(this);
   }
 
+  ///////////////////////// 'AUTH' FUNCTIONS ///////////////////////////
+
   componentWillMount(){
     this.setStateToLocalStorageValues();
   }
@@ -89,7 +91,6 @@ class App extends Component {
         return holderState;
       })
 
-      console.log(this.state);
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('user', name);
     } 
@@ -108,8 +109,46 @@ class App extends Component {
     localStorage.setItem('user', '');
   }
 
+
+  ////////////////////////// BOARDLIST CRUD ///////////////////////
+
+  addBoardList(event){
+    
+  }
+
+  deleteBoardList(event){
+    
+  }
+
+
+
+  //////////////////////////// BOARD CRUD /////////////////////////
+
+  addBoard(event){
+
+  }
+
+  deleteBoard(event){
+
+  }
+
+
+  //////////////////////////// TASK CRUD //////////////////////////
+
+  addTask(event){
+
+  }
+
+  deleteTask(event){
+
+  }
+
+  toggleCompletion(event){
+
+  }
+
+
   render(){
-    let firstView;
 
     return (
       <Router>
@@ -122,7 +161,7 @@ class App extends Component {
                     login={this.login}
                     />           
             )}/>            
-            <Route path="/:user/boards" render={() => (
+            <Route path={'/boards'} render={() => (
               <Wrapper
                user={this.state.user}
                logout={this.logout}

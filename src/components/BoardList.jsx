@@ -1,9 +1,17 @@
 import React, {Component} from 'react';
+import Board from './board'
 
 class BoardList extends Component{
+	constructor(props){
+		super(props)
+	}
+
+
 	render(){
 		return (
-				<h1>BoardList</h1>
+				<>
+					<button onClick="this.props.addBoard"></button>
+				</>
 			)
 	}
 }
