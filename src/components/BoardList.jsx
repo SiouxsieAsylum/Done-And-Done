@@ -25,7 +25,8 @@ class BoardList extends Component{
 		super(props)
 
 		this.state = {
-			add: false
+			add: false,
+			statePathName: '/boardlists'
 		}
 		this.setAddTrue = this.setAddTrue.bind(this);
 		this.handleBoardAddition = this.handleBoardAddition.bind(this);
@@ -46,35 +47,32 @@ class BoardList extends Component{
 
 
 	render(){
-		 let pathname = '/boardlists'
-		// let fullPathName  = pathname + '/:title';
-		// console.log(pathname)
 		return (
 				<>
-						<BoardNav 
-							pathname={pathname}
-							boards={this.props.boards}
-						/>
-						{this.props.boards.map((board) =>
-						{	
-							return <Route
-								exact
-								key={board.title}
-								path={pathname + '/' + board.title} 
-								render={() => (
-									<Board
-										title={board.title}
-										dateCreated={board.dateCreated}
-										tasklist={board.tasklist}
-										/>
-							)}/>
-						})}
-						<button onClick={this.setAddTrue}>Add Board</button>
-						{this.state.add && <Add 
-											tag="board"
-											submissionFunction={this.handleBoardAddition}
-												/>
-											}
+					<BoardNav 
+						pathname={this.state.pathname}
+						boards={this.props.boards}
+					/>
+					{this.props.boards.map((board) =>
+					{	
+						return <Route
+							exact
+							key={board.title}
+							path={this.state.pathname + '/' + board.title} 
+							render={() => (
+								<Board
+									title={board.title}
+									dateCreated={board.dateCreated}
+									tasklists={board.tasklists}
+									/>
+						)}/>
+					})}
+					<button onClick={this.setAddTrue}>Add Board</button>
+					{this.state.add && <Add 
+										tag="board"
+										submissionFunction={this.handleBoardAddition}
+											/>
+										}
 
 				</>
 			)

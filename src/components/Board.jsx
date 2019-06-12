@@ -6,7 +6,9 @@ class Board extends Component{
 	}
 	render(){
 		return (
-				<h1>Board: {this.props.title}</h1>
+				<>
+					<h1>Board: {this.props.title}</h1>
+				</>
 			)
 	}
 }
