@@ -30,6 +30,8 @@ class Wrapper extends Component{
 						user={this.props.user}
 						boards={this.props.boards}
 						addBoard={this.props.addBoard}
+						addTaskList={this.props.addTaskList}
+
 						/>
 				</>
   			)

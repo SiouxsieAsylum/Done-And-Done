@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
- import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
+import pathVars from '../utils/globals';
+
 
 
 class Login extends Component {
@@ -15,7 +17,7 @@ class Login extends Component {
 
 	render(){
 			if (this.props.isLoggedIn) {
-				return <Redirect to='/boardlists' />
+				return <Redirect to={"/" + pathVars.boardlist} />
 			} else {
 			return (
 				<>	

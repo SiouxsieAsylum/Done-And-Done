@@ -5,7 +5,8 @@ class Add extends Component{
 		super(props);
 		this.state = {
 			title: '',
-			message: ''
+			description: '',
+			message: '',
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -24,6 +25,7 @@ class Add extends Component{
 		event.preventDefault();
 		const returnVal = {
 			title: this.state.title,
+			description: this.state.description,
 			message: this.state.message
 		}
 		this.props.submissionFunction(returnVal);
@@ -39,13 +41,22 @@ class Add extends Component{
 							value={this.state.title} 
 							onChange={this.handleChange}/>
 					</label>
+					{this.props.tag === 'tasklist' &&
+						<label>
+							Description
+							<input name="description" 
+									value={this.state.description} 
+									onChange={this.handleChange}/>
+						</label>					
+					}
 					{this.props.tag === 'task' &&
 						<label>
 							Message
 							<input name="message" 
 									value={this.state.message} 
 									onChange={this.handleChange}/>
-						</label>					}
+						</label>					
+					}
 					<input type='submit' value='Create' />
 				</form>
 			)

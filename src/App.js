@@ -1,53 +1,66 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import Login from './components/Login';
-import Wrapper from './components/Wrapper'
+import Wrapper from './components/Wrapper';
+import PathUtilities from './utils/pathUtilities';
+import pathVars from './utils/globals';
 import './App.css';
 
-/*
-  {
-    user: [
-        {
-          title: '',
-          dateCreated: xx/xx/xx,
-          tasklist: [
-            {
-              title: '',
-              message: '',
-              isComplete: false,
-              dateCreated: xx/xx/xx,
-              dateCompleted: xx/xx/xx
-            },
-            {
-  
-            }
-          ]
-        },
-        {
-          title: '',
-          dateCreated: xx/xx/xx,
-          tasklist: [
-            {
-              title: '',
-              message: '',
-              isComplete: false,
-              dateCreated: xx/xx/xx,
-              dateCompleted: xx/xx/xx
-            },
-            {
-  
-            }
-          ]
-        },
-        ...
-      
-    ],
-    user2: [
 
-    ],
-    ... 
-  }
-*/
+  // {
+  //   user: [
+  //       title:{
+  //         title: '',
+  //         dateCreated: xx/xx/xx,
+  //         tasklists: [
+  //           {
+  //             title: '',
+  //             message: '',
+  //             isComplete: false,
+  //             dateCreated: xx/xx/xx,
+  //             dateCompleted: xx/xx/xx
+  //           },
+  //           {
+  
+  //           }
+  //         ]
+  //       },
+  //       title:{
+  //         title: '',
+  //         dateCreated: xx/xx/xx,
+  //         tasklists: 
+  //           title: {
+  //             title: '',
+  //             description: '',
+  //             list: [
+  //               {
+  //                 title: '',
+  //                 message: '',
+  //                 isComplete: false,
+  //                 dateCreated: xx/xx/xx,
+  //                 dateCompleted: xx/xx/xx
+  //               },
+  //               {
+      
+  //               }
+  //             ]
+  //           },
+  //           title:{
+  //             // ...
+  //           }
+  //         },
+  //         title: {
+  //           // ...
+  //         }
+  //       },
+  //       // ...
+      
+  //   ],
+  //   user2: [
+
+  //   ],
+  //   ... 
+  // }
 
 class App extends Component {
   constructor(){
@@ -64,6 +77,12 @@ class App extends Component {
     this.setStateInSessionStorage = this.setStateInSessionStorage.bind(this);
 
     this.addBoard = this.addBoard.bind(this);
+    this.deleteBoard = this.deleteBoard.bind(this);
+    this.addTaskList = this.addTaskList.bind(this);
+    this.deleteTaskList = this.deleteTaskList.bind(this);
+    this.addTask = this.addTask.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
+    this.toggleCompletion = this.toggleCompletion.bind(this);
   }
 
   ///////////////////////// 'AUTH' FUNCTIONS ///////////////////////////
@@ -100,15 +119,15 @@ class App extends Component {
 
     if (event.key === 'Enter'){
       this.setState((prevState) =>{
+        let oldState = { ...prevState }
         let holderState = {};
         holderState.user = name;
         holderState.isLoggedIn = true;
-        holderState.allBoards = {};
-        holderState.allBoards[name] = [];
+        holderState.allBoards = oldState.allBoards;
+        if (!holderState.allBoards[name]) holderState.allBoards[name] = {};
 
         return holderState;
       })
-      console.log(this.state.allBoards)
       sessionStorage.setItem('isLoggedIn', true);
       sessionStorage.setItem('user', name);
     }
@@ -132,49 +151,107 @@ class App extends Component {
   //////////////////////////// BOARD CRUD /////////////////////////
 
   addBoard(obj){
-    let today = new Date().toString()
+    let today = new Date().toString();
+    let pathUtil = PathUtilities()
     let boardObj = {
       dateCreated: today,
       title: obj.title,
-      tasklists: []
+      url: pathUtil.urlPath(obj.title),
+      tasklists: {}
     }
     this.setState((prevState) =>{
         let oldState = { ...prevState }
         let holderState = {};
         holderState.allBoards = oldState.allBoards;
-        console.log(holderState)
-        holderState.allBoards[this.state.user].push(boardObj)
-        console.log(holderState)
+        holderState.allBoards[this.state.user][boardObj.url] = boardObj
         return holderState;
     })
   }
 
-  deleteBoard(event){
-    this.setState({
-
+  deleteBoard(title){
+    this.setState((prevState) => {
+      let oldState = { ...prevState }
+      let holderState = {};
+      holderState.allBoards = oldState.allBoards;
+      delete holderState.allBoards[this.state.user][title];
     })
   }
 
   ////////////////////////// TASK LIST CRUD ///////////////////////
 
+  addTaskList(obj, path){
+    let today = new Date().toString()
+    let pathUtil = PathUtilities()
+    let tasklistObj = {
+      dateCreated: today,
+      title: obj.title,
+      description: obj.description,
+      url: pathUtil.urlPath(obj.title),
+      tasks: []
+    }
+    this.setState((prevState) =>{
+        let oldState = { ...prevState }
+        let holderState = {};
+        holderState.allBoards = oldState.allBoards;
+        pathUtil.setPropertyByPath(holderState.allBoards[this.state.user],path, tasklistObj)
+        console.log(holderState)
+        return holderState;
+    })
+  }
+
+  deleteTaskList(title, path){
+    this.setState((prevState) => {
+      let oldState = { ...prevState }
+      let holderState = {};
+      holderState.allBoards = oldState.allBoards;
+      //integrate path into this
+      // delete holderState.allBoards[this.state.user][title];
+    })
+  }
+
 
   //////////////////////////// TASK CRUD //////////////////////////
 
-  addTask(event){
-    this.setState({
+  addTask(obj, path){
+    let today = new Date().toString()
+    let pathUtil = PathUtilities()
+    let taskObj = {
+      title: obj.title,
+      message: obj.message,
+      isComplete: false,
+      dateCompleted: null,
+      dateCreated: today
+    }
 
+    this.setState((prevState) =>{
+        let oldState = { ...prevState }
+        let holderState = {};
+        holderState.Boards = oldState.Boards;
+        //integrate path into this
+        //holderState.allTasks[this.state.user][taskObj.title] = taskObj
+        return holderState;
     })
   }
 
-  deleteTask(event){
-    this.setState({
-
+  deleteTask(title, path){
+    this.setState((prevState) => {
+      let oldState = { ...prevState }
+      let holderState = {};
+      holderState.allBoards = oldState.allBoards;
+      //integrate path into this
+      // delete holderState.allBoards[this.state.user][title];
     })
   }
 
-  toggleCompletion(event){
-    this.setState({
-
+  toggleCompletion(path){
+    this.setState((prevState) => {
+      let oldState = { ...prevState }
+      let holderState = {};
+      holderState.allBoards = oldState.allBoards;
+      //integrate path into this
+      //pathVal = holderState.allBoards[this.state.user][title];
+      //value = !pathVal
+      //return holderState
     })
   }
 
@@ -185,19 +262,20 @@ class App extends Component {
       <Router>
         <div className="App">
           <Route exact path="/" render={() => (
-              <Login 
+              <Login
                     user={this.state.user}
                     isLoggedIn={this.state.isLoggedIn}
                     logout={this.logout}
                     login={this.login}
                     />           
             )}/>            
-            <Route path={'/boardlists'} render={() => (
+            <Route path={"/" + pathVars.boardlist} render={() => (
               <Wrapper
                user={this.state.user}
                logout={this.logout}
                isLoggedIn={this.state.isLoggedIn}
                addBoard={this.addBoard}
+               addTaskList={this.addTaskList}
                boards={this.state.allBoards[this.state.user]}
                />
             )}

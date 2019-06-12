@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
 import { BrowserRouter as Router, withRouter, Route, Link } from 'react-router-dom';
+import pathVars from '../utils/globals';
 import Board from './Board'
 import Add from './Add'
 
 const BoardNav = (props) => {
 	const nav = (
 			<ul>
-				{props.boards && props.boards.map(board => {
-					return <li key={board.title + '-nav'}>
-						<Link to={props.pathname + '/' + board.title}>
-							{board.title}
+				{props.boards && Object.keys(props.boards).map(board => {
+					let boardObj = props.boards[board];
+					return <li key={board + '-nav'}>
+						<Link to={"/" + props.pathname + '/' + boardObj.url}>
+							{boardObj.title}
 						</Link>
 					</li>
 				})}
@@ -17,7 +19,6 @@ const BoardNav = (props) => {
 		)
 
 	return nav;
-	
 }
 
 class BoardList extends Component{
@@ -26,7 +27,7 @@ class BoardList extends Component{
 
 		this.state = {
 			add: false,
-			statePathName: '/boardlists'
+			statePathName: pathVars.boardlist
 		}
 		this.setAddTrue = this.setAddTrue.bind(this);
 		this.handleBoardAddition = this.handleBoardAddition.bind(this);
@@ -45,25 +46,30 @@ class BoardList extends Component{
 		})
 	}
 
+	componentWillUpdate(){
+		console.log(this.props);
+	}
+
 
 	render(){
 		return (
 				<>
 					<BoardNav 
-						pathname={this.state.pathname}
+						pathname={pathVars.boardlist}
 						boards={this.props.boards}
 					/>
-					{this.props.boards.map((board) =>
-					{	
+					{this.props.boards && Object.keys(this.props.boards).map((title) =>
+					{	let board = this.props.boards[title]
+						let newPath = "/" + pathVars.boardlist + '/' + board.url
 						return <Route
 							exact
-							key={board.title}
-							path={this.state.pathname + '/' + board.title} 
+							key={title + '-board'}
+							path={newPath} 
 							render={() => (
 								<Board
-									title={board.title}
-									dateCreated={board.dateCreated}
-									tasklists={board.tasklists}
+									board={board}
+									addTaskList={this.props.addTaskList}
+									previousPathName={newPath}
 									/>
 						)}/>
 					})}
